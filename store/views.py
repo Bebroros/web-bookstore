@@ -1,17 +1,23 @@
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
+from .permissions import IsAdminOrReadOnly
 from .serializers import *
 
 
 class BookList(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, format=None):
         books = Book.objects.all()
         serializer = BookListSerializer(books, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
+
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -20,6 +26,8 @@ class BookList(APIView):
 
 
 class BookDetail(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, id, format=None):
         try:
             book = Book.objects.get(id=id)
@@ -49,6 +57,8 @@ class BookDetail(APIView):
 
 
 class AuthorList(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, format=None):
         authors = Author.objects.all()
         serializer = AuthorListSerializer(authors, many=True)
@@ -63,6 +73,8 @@ class AuthorList(APIView):
 
 
 class AuthorDetail(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, id, format=None):
         try:
             author = Author.objects.get(id=id)
@@ -92,6 +104,8 @@ class AuthorDetail(APIView):
 
 
 class PublisherList(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, format=None):
         publishers = Publisher.objects.all()
         serializer = PublisherListSerializer(publishers, many=True)
@@ -106,6 +120,8 @@ class PublisherList(APIView):
 
 
 class PublisherDetail(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, id, format=None):
         try:
             publisher = Publisher.objects.get(id=id)
