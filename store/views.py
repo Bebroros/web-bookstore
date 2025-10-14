@@ -1,11 +1,19 @@
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
+from .permissions import IsAdminOrReadOnly
 from .serializers import *
+import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 
 class BookList(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, format=None):
         books = Book.objects.all()
         serializer = BookListSerializer(books, many=True)
@@ -14,12 +22,15 @@ class BookList(APIView):
     def post(self, request, format=None):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            obj = serializer.save()
+            logger.info(f"New book created. id: {obj.id}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BookDetail(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, id, format=None):
         try:
             book = Book.objects.get(id=id)
@@ -36,6 +47,7 @@ class BookDetail(APIView):
         serializer = BookSerializer(book, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            logger.info(f"Book updated. id: {id}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -45,24 +57,30 @@ class BookDetail(APIView):
         except Book.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         book.delete()
+        logger.info(f"Book deleted. id: {id}. time: {datetime.datetime.now()}")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AuthorList(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, format=None):
         authors = Author.objects.all()
         serializer = AuthorListSerializer(authors, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        serializer = AuthorListSerializer(data=request.data)
+        serializer = AuthorSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            obj = serializer.save()
+            logger.info(f"New author created. id: {obj.id}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AuthorDetail(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, id, format=None):
         try:
             author = Author.objects.get(id=id)
@@ -79,6 +97,7 @@ class AuthorDetail(APIView):
         serializer = AuthorSerializer(author, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            logger.info(f"Author updated. id: {id}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -88,10 +107,13 @@ class AuthorDetail(APIView):
         except Author.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         author.delete()
+        logger.info(f"Author deleted. id: {id}. time: {datetime.datetime.now()}")
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class PublisherList(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, format=None):
         publishers = Publisher.objects.all()
         serializer = PublisherListSerializer(publishers, many=True)
@@ -100,18 +122,21 @@ class PublisherList(APIView):
     def post(self, request, format=None):
         serializer = PublisherSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            obj = serializer.save()
+            logger.info(f"New publisher created. id: {obj.id}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PublisherDetail(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
     def get(self, request, id, format=None):
         try:
             publisher = Publisher.objects.get(id=id)
         except Publisher.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = PublisherListSerializer(publisher, many=False)
+        serializer = PublisherSerializer(publisher, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, id, format=None):
@@ -122,6 +147,7 @@ class PublisherDetail(APIView):
         serializer = PublisherSerializer(publisher, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            logger.info(f"Publisher updated. id: {id}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -131,4 +157,5 @@ class PublisherDetail(APIView):
         except Publisher.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         publisher.delete()
+        logger.info(f"Publisher deleted. id: {id}. time: {datetime.datetime.now()}")
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,10 +1,14 @@
 # Bookstore
-Bookstore with a list of all books, publishers and authors. Also you can access them separately using id. You can authorize to be able to order items from your cart.
+Bookstore with a list of all books, publishers and authors. Also you can access them separately using id. You can authorize to be able to order items from your cart. Creation, update, deletion is available only for the staff
+
+## Headers
+
+` Authorization: Bearer {token} `
 
 ## Books
 | Method | Endpoint | Description | Response status | Request body | Response body |
 | ----------- | ----------- | ----------- |---------------------------------------------| ----------- | ----------- |
-| GET | /books | Get a list of all books | 200 | - | json {"id": 1, "name": "Dune", "genre": Science-fiction, "author": "Frank Herbert", "price": 15.00, "popularity": 100} |
+| GET | /books | Get a list of all books | 200 | - | json [{"id": 1, "name": "Dune", "genre": Science-fiction, "author": "Frank Herbert", "price": 15.00, "popularity": 100}, ...] |
 | GET | /books/{id} | Get one book by id | 200, 404(if not found) | - | json {"id": 1, "name": "Dune", "description": "...", "genre": Science-fiction, "author": "Frank Herbert", "price": 15.00, "popularity": 100}, "year": 2020 |
 | POST | /books | Add new book | 201, 400(if bad request) | json {"name": "Dune", "description": "...", "genre": Science-fiction, "author_id": 1, "price": 15.00, "year": 2020} | json {"id": 1, "name": "Dune", "description": "...", "genre": Science-fiction, "author": "Frank Herbert", "price": 15.00, "popularity": 100, "year": 2020} |
 | PUT | /books/{id} | Update a book | 200, 404(if not found), 400(if bad request) | json {"price: 10.00"} | json {"id": 1, "name": "Dune", "description": "...", "genre": Science-fiction, "author": "Frank Herbert", "price": 10.00, "popularity": 100}, "year": 2020 |
@@ -13,7 +17,7 @@ Bookstore with a list of all books, publishers and authors. Also you can access 
 ## Authors
 | Method | Endpoint | Description | Response status | Request body | Response body |
 | ----------- | -------- | ----------- |--------------------------| ----------- | ----------- |
-| GET | /authors | Get a list of all authors | 200 | - | json {"id": 1, "name": "Frank Herbert", "books": [...]} |
+| GET | /authors | Get a list of all authors | 200 | - | json [{"id": 1, "name": "Frank Herbert", "books": [...]}, ...] |
 | GET | /authors/{id} | Get an author by id | 200, 404(if not found) | - | json {"id": 1, "name": "Frank Herbert", "description": "...", "books": [...]} |
 | POST | /authors | Add a new author | 201, 400(if bad request) | json {"name": "Frank Herbert", "description": "...", "books": [...]} | json {"id": 1, "name": "Frank Herbert", "description": "...", "books": [...]} |
 | PUT | /authors/{id} | Update an author | 200, 404(if no found), 400(if bad request) | json {"description": "..."} | json {"id": 1, "name": "Frank Herbert", "description": "...", "books": [...]} |
@@ -22,7 +26,7 @@ Bookstore with a list of all books, publishers and authors. Also you can access 
 ## Publishers
 | Method | Endpoint | Description | Response status | Request body | Response body |
 | ----------- | ----------- | ----------- |--------------------------| ----------- | ----------- |
-| GET | /publishers | Get all publishers | 200 | - | {"id": 1, "name": "KCD", "books": [...]} |
+| GET | /publishers | Get all publishers | 200 | - | [{"id": 1, "name": "KCD", "books": [...]}] |
 | GET | /publishers/{id} | Get a publisher by id | 200, 404(if not found) | - | json {"id": 1, "name": "KCD", "books": [...], "description": "..."} |
 | POST | /publishers | Add a new publisher | 201, 400(if bad request) | json {"name": "KCD", "books": [...], "description": "..."} | json {"id": 1, "name": "KCD", "books": [...], "description": "..."} |
 | PUT | /publishers/{id} | Update a publisher | 200, 404(if not found), 400(if bad request) | json {"description": "..."} | json {"id": 1, "name": "KCD", "books": [...], "description": "..."} |
@@ -39,14 +43,14 @@ Bookstore with a list of all books, publishers and authors. Also you can access 
 ## Authorization
 | Method | Endpoint | Description | Response status | Request body | Response body |
 | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| POST | /auth/login | Login a user | 200, 401(if login failed) | json {"login": "artem", "password": "@rtem123!"} | json {"token": "..."} |
-| POST | /auth/register | Register a user | 200 | json {"username": "artem", "email": "artem.sh@gmail.com", "password": "@rtem123!"} | json {"token": "..."} |
+| POST | /auth/login | Login a user | 200, 401(if login failed), 400(if bad request) | json {"username": "artem", "password": "@rtem123!", "password2": "@rtem123!"} | json {"access": "...", "refresh": "..."} |
+| POST | /auth/register | Register a user | 200, 400(if bad request) | json {"username": "artem", "email": "artem.sh@gmail.com", "password": "@rtem123!", "password2": "@rtem123!", "first_name"(optional): "...", "last_name"(optional): "..."} | {"access": "...", "refresh": "..."} |
 
 ## User
 | Method | Endpoint | Description | Response status | Request body | Response body |
 | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| GET | /user | Get user info | 200 | - | json {"username": "artem", "email": "artem.sh@gmail.com", "orders": [...]} |
-| PUT | /user | Update user info | 200 | json {"username": "artem"} | json {"username": "artem", "email": "artem.sh@gmail.com", "orders": [...]} |
+| GET | /user/{id} | Get user info | 200 | - | json {"username": "artem", "email": "artem.sh@gmail.com", "orders": [...], "first_name": "artem", "last_name": "artem"} |
+| PUT | /user/{id} | Update user info | 200 | json {"username": "artem"} | json {"username": "artem", "email": "artem.sh@gmail.com", "orders": [...], "first_name": "artem", "last_name": "artem"} |
 
 ## Orders
 | Method | Endpoint | Description | Response status | Request body | Response body |
