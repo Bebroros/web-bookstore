@@ -6,6 +6,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import *
 from .serializers import *
 from .permissions import *
+import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(APIView):
@@ -15,6 +18,7 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            logger.info(f"User is registered. username: {request.data.username}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -38,6 +42,7 @@ class UserView(APIView):
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            logger.info(f"User is updated. username: {request.data.username}. time: {datetime.datetime.now()}")
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
