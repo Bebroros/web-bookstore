@@ -41,10 +41,12 @@ Bookstore with a list of all books, publishers and authors. Also you can access 
 | DELETE | /cart/{item_id} | Remove an item from the cart | 204, 404(if not found) | - | - |
 
 ## Authorization
-| Method | Endpoint | Description | Response status | Request body | Response body |
-| ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
-| POST | /auth/login | Login a user | 200, 401(if login failed), 400(if bad request) | json {"username": "artem", "password": "@rtem123!", "password2": "@rtem123!"} | json {"access": "...", "refresh": "..."} |
-| POST | /auth/register | Register a user | 200, 400(if bad request) | json {"username": "artem", "email": "artem.sh@gmail.com", "password": "@rtem123!", "password2": "@rtem123!", "first_name"(optional): "...", "last_name"(optional): "..."} | {"access": "...", "refresh": "..."} |
+| Method | Endpoint            | Description       | Response status | Request body                                                                                                                                                              | Response body |
+| ----------- |---------------------|-------------------| ----------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------| ----------- |
+| POST | /auth/login         | Login a user      | 200, 401(if login failed), 400(if bad request) | json {"username": "artem", "password": "@rtem123!", "password2": "@rtem123!"}                                                                                             | json {"access": "...", "refresh": "..."} |
+| POST | /auth/register      | Register a user   | 200, 400(if bad request) | json {"username": "artem", "email": "artem.sh@gmail.com", "password": "@rtem123!", "password2": "@rtem123!", "first_name"(optional): "...", "last_name"(optional): "..."} | {"access": "...", "refresh": "..."} |
+| POST | /auth/token/refresh | Refresh JWT token | 200, 401(if login failed), 400(if bad request) | json {"refresh": "..."}                                                                                                                                                   | json {"access": "..."} |
+
 
 ## User
 | Method | Endpoint | Description | Response status | Request body | Response body |
