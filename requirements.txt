@@ -1,2 +1,6 @@
 djangorestframework
 django-cors-headers
+djangorestframework-simplejwt
+pytest
+pytest-django
+pytest-pythonpath
